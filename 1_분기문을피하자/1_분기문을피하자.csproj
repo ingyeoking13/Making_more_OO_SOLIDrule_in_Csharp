@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8846501C-ACC7-48D0-A4A7-E23C57806D6F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_1_반복문을피하자</RootNamespace>
-    <AssemblyName>1_반복문을피하자</AssemblyName>
+    <RootNamespace>_1_분기문을피하자</RootNamespace>
+    <AssemblyName>1_분기문을피하자</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
