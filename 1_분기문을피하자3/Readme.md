@@ -129,6 +129,8 @@ public class Evening : ITimeState
 ````
 
 Meal 클래스의 primitive 타입의 변수들을 개념적으로 묶을 수 있기 때문에 좋다. 
+
+### 힌트! 
 이 것은 사실 state Pattern 의 한 종류이다.  
 하지만 Pattern을 외우는 것보다, 내 소스에서 어떤 smell이 난다고 생각할 때  
 사용해야 좋은 판단이라고 생각하기 때문에 주제를 '분기문을 피하자' 라고 이야기하였다.
