@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2_abstract_vs_interface", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "부록1_Csharp_Event_그리고_Delegate", "부록1_Csharp_Event_그리고_Delegate\부록1_Csharp_Event_그리고_Delegate.csproj", "{BCC8BD9D-0311-4D73-ACC8-CA046098420C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3_객체간_통신을_하는_법,Observer", "3_객체간_통신을_하는_법,Observer\3_객체간_통신을_하는_법,Observer.csproj", "{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BCC8BD9D-0311-4D73-ACC8-CA046098420C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCC8BD9D-0311-4D73-ACC8-CA046098420C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCC8BD9D-0311-4D73-ACC8-CA046098420C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
