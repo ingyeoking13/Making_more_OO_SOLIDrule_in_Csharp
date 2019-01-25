@@ -47,6 +47,13 @@
     <Compile Include="1first\Person.cs" />
     <Compile Include="1first\Program.cs" />
     <Compile Include="2second\IObserver.cs" />
+    <Compile Include="5fifth\Company.cs" />
+    <Compile Include="5fifth\GenericNotifier.cs" />
+    <Compile Include="5fifth\HeadHunter.cs" />
+    <Compile Include="5fifth\IObserver.cs" />
+    <Compile Include="5fifth\ObserverDelegate.cs" />
+    <Compile Include="5fifth\Person.cs" />
+    <Compile Include="5fifth\Program.cs" />
     <Compile Include="4fourth\Company.cs" />
     <Compile Include="4fourth\HeadHunter.cs" />
     <Compile Include="4fourth\IObserver.cs" />

@@ -11,12 +11,10 @@ namespace _3_객체간_통신을_하는_법_Observer.fourth
         public List<IObserver> subscriber = new List<IObserver>();
 
         public string Name { get; }
-        public int Salary { get; }
 
-        public Company(string name, int salary)
+        public Company(string name)
         {
             Name = name;
-            Salary = salary;
         }
 
         public void register(IObserver p)
@@ -27,13 +25,19 @@ namespace _3_객체간_통신을_하는_법_Observer.fourth
         public void NotifyNewCrewWanted()
         {
             Console.WriteLine($"*** {Name} company Notify that they want New Crew.");
-            notify(Salary);
+            companyNotifyObserver();
             Console.WriteLine();
         }
 
-        public void notify(int salary)
+        public void companyNotifyObserver()
         {
-            foreach (var p in subscriber) p.update(salary);
+            foreach (var p in subscriber)
+            {
+                if (p is Person) p.personGetNotifiedFromCompany(this, (int)1e6);
+                else p.headhunterGetNotifiedFromCompany(this, "IT", "CTO", (int)2e9);
+            }
         }
+
+        public void headhunterNotifyPerson(string companyName, string department, string level, int experiencedWage) { } // empty
     }
 }

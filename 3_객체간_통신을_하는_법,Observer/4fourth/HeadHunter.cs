@@ -15,21 +15,31 @@ namespace _3_객체간_통신을_하는_법_Observer.fourth
             Name = name;
         }
 
-        public void update()
-        {
-            Console.WriteLine($"I'm {Name} HeadHunter. I received your notification.");
-        }
-
-        public void notify()
-        {
-            Console.WriteLine($"*** {Name} HeadHunter notify that he has something to you");
-            foreach (var o in observers) o.update();
-            Console.WriteLine();
-        }
-
         public void register(IObserver o)
         {
             observers.Add(o);
         }
+
+        public void headhunterGetNotifiedFromCompany(object sender, string Department, string Level, int experiencedWage)
+        {
+            Console.WriteLine($"I'm {Name} HeadHunter. I received {(sender as Company).Name} notification.");
+            headhunterNotifyPerson((sender as Company).Name, Department, Level, experiencedWage);
+        }
+
+        public void headhunterNotifyPerson(string companyName, string department, string level, int experiencedWage)
+        {
+            Console.WriteLine($"*** {Name} HeadHunter notify that he has something to you");
+            foreach (var o in observers) o.personGetNotifiedFromHeadHunter(this, companyName, department, level, experiencedWage);
+            Console.WriteLine();
+        }
+
+        public void personGetNotifiedFromHeadHunter(object sender, string companyName, string Department, string Level, int experiecedWage)
+        {
+            Console.WriteLine($"I'm {Name}.I received Message From {(sender as HeadHunter).Name} about {companyName} company");
+            Console.WriteLine($"=={companyName}  : {Department}, {Level} {experiecedWage} KRW job==");
+        }
+
+        public void companyNotifyObserver() { } //empty
+        public void personGetNotifiedFromCompany(object sender, int newPersonWage) { } //empty
     }
 }

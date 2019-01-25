@@ -8,7 +8,6 @@ namespace _3_객체간_통신을_하는_법_Observer.third
 {
     public interface IObserver
     {
-        string Name { get; }
         void update();
     }
 }
