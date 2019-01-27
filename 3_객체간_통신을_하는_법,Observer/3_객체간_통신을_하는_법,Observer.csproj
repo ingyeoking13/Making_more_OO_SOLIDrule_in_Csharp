@@ -66,6 +66,10 @@
     <Compile Include="3third\ISubject.cs" />
     <Compile Include="3third\Person.cs" />
     <Compile Include="3third\Program.cs" />
+    <Compile Include="6sixth\Company.cs" />
+    <Compile Include="6sixth\HeadHunter.cs" />
+    <Compile Include="6sixth\Person.cs" />
+    <Compile Include="6sixth\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="2second\Company.cs" />
     <Compile Include="2second\HeadHunter.cs" />

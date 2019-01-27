@@ -585,8 +585,15 @@ K씨의 문제는 문제에 대해 조금만 더 고민을 하게되면 해결된다.
 각각의 `Notify`, `Observer` 행위를 구현하는 메서드를 제공하다보니 인터페이스에 포함되는 메서드가 갈수록 늘어났다.   
 그리고 `Observer` 인터페이스로 구현된 클래스들은 사용하지 않는 메서드 까지 포함하게 되었다.   
 
-어떻게 인터페이스의 다양한 메서드들을 줄일 수 있을까?  
-우선적으로 이 다양한 인자들이 문제일 것이다.   
+### 5 희망편  
+
+어떻게 인터페이스가 가지는 다양한 메서드들을 줄일 수 있을까?  
+`Subject`가 알림을 받는 객체를 저장하는게 아니라, 알림을 받아서 수행되는 함수를 저장해두기로 하면 가능하다.  
+
+문제 해결에 대한 것은 꽤나 명확하지만 해결에 대한 나는 `Zoran Horvat`의 `tactical design pattern` 강의에 있는 접근 방식을 사용할 것이다.   
+왜냐하면 이 방식이 꽤 단계적으로 접근하기에 보기 좋기 때문이다.   
+
+우선적으로 각 `observer` 마다 요구하는 다양한 인자들이 신경쓰인다.  
 해결을 위해 다양한 인자들을 하나로 표현할 수 있는 `Generic`을 이용해보자.    
 
 ````C#
@@ -599,26 +606,14 @@ void personGetNotifiedFromHeadHunter(object sender, string companyName, string D
 void getNotifed(object sender, T data);
 ````
 
-이제 `observer` 행위를 하는 `Person`, `HeadHunter` 는 그 행위 자체 `getNotifed`를 필드로 가지고 있을 것이다.    
+이제 관찰하는 행위를 하는 `Person`, `HeadHunter` 는 `getNotifed`를 가지고 있게 한다.  
+각자 `getNotifed` 행위가 요구하는 인자들은 `Generic T`로 일반화 하였다.  
+`observer` 들은 자신들이 `getNofied`를 가지기 위해, 해당 `Observer<T>` 인터페이스로 직접 구현해도 되지만,  (예: `Person<T> : Observer<T>` )   
+필드로 `Observer<T>` 인터페이스를 가지게 해두자. 이렇게 하면 한 객체가 하나 이상의 `Observer<T>`를 가질 수 있을 것이다.   
+(직접적으로 인터페이스를 구현할 때는  Person 객체는 한 타입의 getNotified만 가질 수 있다는 걸 확인하자.)     
+즉, 하나 이상의 Generic을 가질 수 있는 것이다. (예: Person 객체는 회사 알림은 int만 받지만, 헤드헌터 알림은 [string string string..]을 받는다 )  
 
 ````C#
-public class ObserverDelegate<T> : fifth.IObserver<T>
-{
-    public delegate void observerDelegate(object sender ,T data);
-    observerDelegate @delegate;
-
-    public ObserverDelegate(observerDelegate @delegate)
-    {
-         this.@delegate= @delegate;
-    }
-
-    public void getNotified(object sender, T data)
-    {
-        @delegate?.Invoke(sender, data);
-    }
-}
-
-
 public class ObserverDelegate<T> : fifth.IObserver<T>
 {
     public delegate void observerDelegate(object sender ,T data);
@@ -634,7 +629,51 @@ public class ObserverDelegate<T> : fifth.IObserver<T>
         @delegate?.Invoke(sender, data);
     }
 }
+````
 
+`IObserver<T>` 인터페이스로 구현된 클래스이다. 이 클래스의 아래와 같은 역할을 수행한다.    
+`getNotified` 함수는 자신의 `delegate` 가 가르키는 함수를 수행하는 것 뿐이다.   
+아래는 `Observer` 클래스 중 하나인 `Person`에서 `ObserverDelegate<T>` 클래스가 어떻게 사용되는지 보여준다.  
+
+````C#
+public class Person 
+{
+    public ObserverDelegate<int> personGetNotifiedFromCompany;
+    public ObserverDelegate<Tuple< string, string, string, int>> personGetNotifiedFromHeadHunter;
+    public string Name { get; }
+
+    public Person(string name)
+    {
+        Name = name;
+        personGetNotifiedFromCompany = new ObserverDelegate<int>
+            ( (s,d) => this.personGetNotifiedFromCompanyHandler(s, d) );
+
+        personGetNotifiedFromHeadHunter = new ObserverDelegate<Tuple<string, string, string, int>>
+            ( (s,d) => this.personGetNotifiedFromHeadHunterHandler(s, d) );
+    }
+
+    public void personGetNotifiedFromCompanyHandler(object sender, int newPersonWage)
+    {
+        Console.WriteLine($"I'm {Name}. I reveived message from {(sender as Company).Name}. {newPersonWage} KRW Job");
+    }
+
+    public void personGetNotifiedFromHeadHunterHandler(object sender, Tuple<string , string , string , int> data )
+    {
+        Console.WriteLine($"I'm {Name}.I received Message From {(sender as HeadHunter).Name} about {data.Item1} company");
+        Console.WriteLine($"=={data.Item1}  : {data.Item2}, {data.Item3} {data.Item4} KRW job==");
+    }
+}
+````
+
+`Person`은 자기가 호출받고 싶어하는 함수만 자신의 `ObserverDelegate<T>`라는 필드에 등록해놓으면 된다.  
+그리고 자기 자신이 가지는 함수에 대해 필드로 노출시켜주었다.   
+
+아래부터는 `Subject`에 관한 것이다. 
+우선 `Subject`가 가질 `GenricNotifier<T>`를 살펴보자.   
+`GenericNotifer<T>` 는 `IObserver<T>` 인터페이스로 구현된 클래스를 담는 리스트만 가지고 있다.  
+그리고 `notify` 함수를 수행하면, 리스트를 순회하며 옵저버의 `getNotified` 함수를 수행한다.  
+
+````C#
 public class GenericNotifier<T>
 {
     private List<IObserver<T>> notifyList;
@@ -675,35 +714,10 @@ public class Company
         HeadHunter?.notify(this, Tuple.Create("IT", "CTO", (int)2e9));
     }
 }
+````
 
-public class Person 
-{
-    public ObserverDelegate<int> personGetNotifiedFromCompany;
-    public ObserverDelegate<Tuple< string, string, string, int>> personGetNotifiedFromHeadHunter;
-    public string Name { get; }
-
-    public Person(string name)
-    {
-        Name = name;
-        personGetNotifiedFromCompany = new ObserverDelegate<int>
-            ( (s, d) => this.personGetNotifiedFromCompanyHandler(s, d) );
-
-        personGetNotifiedFromHeadHunter = new ObserverDelegate<Tuple<string, string, string, int>>
-            ( (s,d) => this.personGetNotifiedFromHeadHunterHandler(s, d) );
-    }
-
-    public void personGetNotifiedFromCompanyHandler(object sender, int newPersonWage)
-    {
-        Console.WriteLine($"I'm {Name}. I reveived message from {(sender as Company).Name}. {newPersonWage} KRW Job");
-    }
-
-    public void personGetNotifiedFromHeadHunterHandler(object sender, Tuple<string , string , string , int> data )
-    {
-        Console.WriteLine($"I'm {Name}.I received Message From {(sender as HeadHunter).Name} about {data.Item1} company");
-        Console.WriteLine($"=={data.Item1}  : {data.Item2}, {data.Item3} {data.Item4} KRW job==");
-    }
-}
-
+아래는 헤드헌터와 메인함수이다.  
+````C#
 
 public class HeadHunter 
 {
@@ -742,7 +756,6 @@ public class HeadHunter
         Console.WriteLine($"I'm {Name}.I received Message From {(sender as HeadHunter).Name} about {data.Item1} company");
         Console.WriteLine($"=={data.Item1}  : {data.Item2}, {data.Item3} {data.Item4} KRW job==");
     }
-
 }
 
 //Main
@@ -824,6 +837,152 @@ I'm BlueBird.I received Message From SaramIn about samsung company
 
 *** LG company Notify that they want New Crew.
 ````
+
+소스는 길어졌지만, `observer` 인터페이스는 간단명료해졌다.  
+`Subject`는 이제 어떤 `Observer`를 기억하는 것이아니라, 어떤 `Observer`의 `Method`를 기억하는 것이다.   
+
+````C#
+//before
+
+foreach (var p in subscriber) // subscriber 는 Observer 리스트이다.   
+{
+    if (p is Person) p.personGetNotifiedFromCompany(this, (int)1e6);
+    else p.headhunterGetNotifiedFromCompany(this, "IT", "CTO", (int)2e9);
+}
+
+//after
+
+public void companyNotifyObserver()
+{
+// Person과 HeadHunter 는 delegate 리스트이다.  
+    person?.notify(this, (int)1e6); 
+    HeadHunter?.notify(this, Tuple.Create("IT", "CTO", (int)2e9));
+}
+````
+
+`Subject`의 함수만 보면 논리상 크게 달라진 점은 없어보인다.  
+하지만 이 접근법을 통해   
+1 `notify`의 인자를 일반화 시킬수 있었고,  
+2 `Observer` 객체들은 자기가 수행하는 함수만 가질수 있게 되었다. (유지보수 좋음)  
+
+### 6 .Net Solution
+
+생각해보면 그냥 `Subject`에 `delegate`를 두고 해당 `Observer` 객체의 함수를 직접적으로 참조하면 될 것 이다.  
+`EventHandler<TEventArgs>`를 사용해서 해결한다. 
+
+````C#
+public class Company 
+{
+    public event EventHandler<int> person;
+    public event EventHandler<Tuple<string, string, int>> HeadHunter; 
+
+    public string Name { get; }
+
+    public Company(string name)
+    {
+        Name = name;
+    }
+
+    public void NotifyNewCrewWanted()
+    {
+        Console.WriteLine($"*** {Name} company Notify that they want New Crew.");
+        companyNotifyObserver();
+        Console.WriteLine();
+    }
+
+    public void companyNotifyObserver()
+    {
+        person?.Invoke(this, (int)1e6);
+        HeadHunter?.Invoke(this, Tuple.Create("IT", "CTO", (int)2e9));
+    }
+}
+
+ public class Person 
+{
+    public string Name { get; }
+
+    public Person(string name)
+    {
+        Name = name;
+    }
+
+    public void personGetNotifiedFromCompanyHandler(object sender, int newPersonWage)
+    {
+        Console.WriteLine($"I'm {Name}. I reveived message from {(sender as Company).Name}. {newPersonWage} KRW Job");
+    }
+
+    public void personGetNotifiedFromHeadHunterHandler(object sender, Tuple<string , string , string , int> data )
+    {
+        Console.WriteLine($"I'm {Name}.I received Message From {(sender as HeadHunter).Name} about {data.Item1} company");
+        Console.WriteLine($"=={data.Item1}  : {data.Item2}, {data.Item3} {data.Item4} KRW job==");
+    }
+}
+
+public class HeadHunter 
+{
+    public event EventHandler<Tuple<string, string, string, int>> person;
+    public event EventHandler<Tuple<string, string, string, int>> headHunter;
+
+    public string Name { get; }
+    public HeadHunter(string name)
+    {
+        Name = name;
+    }
+
+    public void headhunterGetNotifiedFromCompanyHandler(object sender, Tuple<string, string, int> data)
+    {
+        Console.WriteLine($"I'm {Name} HeadHunter. I received {(sender as Company).Name} notification.");
+        headhunterNotifyPerson((sender as Company).Name, data.Item1, data.Item2,data.Item3);
+    }
+
+    public void headhunterNotifyPerson(string companyName, string department, string level, int experiencedWage)
+    {
+        Console.WriteLine($"*** {Name} HeadHunter notify that he has something to you");
+        person?.Invoke(this, Tuple.Create(companyName, department, level, experiencedWage));
+        Console.WriteLine();
+    }
+
+    public void personGetNotifiedFromHeadHunterHandler(object sender, Tuple<string , string , string , int> data )
+    {
+        Console.WriteLine($"I'm {Name}.I received Message From {(sender as HeadHunter).Name} about {data.Item1} company");
+        Console.WriteLine($"=={data.Item1}  : {data.Item2}, {data.Item3} {data.Item4} KRW job==");
+    }
+}
+
+//initializing
+Company samsung = new Company("samsung");
+Company LG = new Company("LG");
+HeadHunter SaramIn = new HeadHunter("SaramIn");
+HeadHunter Jasoseol = new HeadHunter("Jasoseol");
+HeadHunter JobKorea = new HeadHunter("JobKorea");
+Person yohan = new Person("YoHan");
+Person gaelim = new Person("Gaelim");
+Person kimchi = new Person("Kimchi");
+Person adkb = new Person("adkb");
+Person BlueBird = new Person("BlueBird");
+
+//register
+samsung.person += yohan.personGetNotifiedFromCompanyHandler;
+samsung.person += gaelim.personGetNotifiedFromCompanyHandler;
+samsung.person += kimchi.personGetNotifiedFromCompanyHandler;
+
+samsung.HeadHunter += JobKorea.headhunterGetNotifiedFromCompanyHandler;
+samsung.HeadHunter += Jasoseol.headhunterGetNotifiedFromCompanyHandler;
+samsung.HeadHunter += SaramIn.headhunterGetNotifiedFromCompanyHandler;
+
+SaramIn.person += adkb.personGetNotifiedFromHeadHunterHandler;
+SaramIn.person += BlueBird.personGetNotifiedFromHeadHunterHandler;
+
+Jasoseol.headHunter += JobKorea.personGetNotifiedFromHeadHunterHandler;
+
+//notify
+samsung.NotifyNewCrewWanted();
+LG.NotifyNewCrewWanted();
+````
+어떤가?   
+소스가 훨씬 간편하고 가독성이 좋다.  
+:smile:  
+
 
 
 
