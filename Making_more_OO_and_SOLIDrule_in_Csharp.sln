@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "부록1_Csharp_Event_그리
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3_객체간_통신을_하는_법,Observer", "3_객체간_통신을_하는_법,Observer\3_객체간_통신을_하는_법,Observer.csproj", "{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4_객체를_만드는_이유는1", "4_객체를_만드는_이유는1\4_객체를_만드는_이유는1.csproj", "{396AF973-9DBF-4257-8B7A-0DFB4A192A5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76CAF696-69FF-4CD9-B7EA-14D925DFF1C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396AF973-9DBF-4257-8B7A-0DFB4A192A5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396AF973-9DBF-4257-8B7A-0DFB4A192A5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396AF973-9DBF-4257-8B7A-0DFB4A192A5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396AF973-9DBF-4257-8B7A-0DFB4A192A5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
