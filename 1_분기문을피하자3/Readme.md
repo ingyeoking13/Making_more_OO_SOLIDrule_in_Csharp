@@ -1,6 +1,6 @@
 ## 상황 1.3 분기문을 피하자3
 
-### 블로그에 있는 예를 가지고 오다. (절망편)
+### 익명의 블로그에 있는 예를 가지고 오다. (절망편)
 
 **설명**   
 
@@ -109,7 +109,7 @@ public class Morning : ITimeState
     public ITimeState SetTimeEvening() => new Evening();
     public ITimeState SetTimeNight() => new Night();
     public ITimeState TimeProceed() => new Evening();
-    void ITimeState.eating()
+    public void eating()
     {
         //Do MorningEating();
     }
@@ -121,16 +121,15 @@ public class Evening : ITimeState
     public ITimeState SetTimeEvening() => this;
     public ITimeState SetTimeNight() => new Night();
     public ITimeState TimeProceed() => new Night();
-    void ITimeState.eating()
+    public void eating()
     {
         //Do EveningEating();
     }
 } //.. Night 생략
 ````
 
-Meal 클래스의 primitive 타입의 변수들을 개념적으로 묶을 수 있기 때문에 좋다. 
+`Meal` 클래스의 `primitive(bool)` 타입의 변수들을 개념적으로 묶어 객체화 하였기 때문에 좋다.  
+그리고 다른 개발자가 보았을 때, `ITimeState` 타입의 변수만 건들지 않으면 되기에 좋다.  
 
-### 힌트! 
-이 것은 사실 state Pattern 의 한 종류이다.  
-하지만 Pattern을 외우는 것보다, 내 소스에서 어떤 smell이 난다고 생각할 때  
-사용해야 좋은 판단이라고 생각하기 때문에 주제를 '분기문을 피하자' 라고 이야기하였다.
+위 예제는 사실 `State Pattern` 의 한 형태이다.  
+하지만 `Pattern`을 외우는 것보다, 내 소스에서 어떤 smell이 난다고 생각할 때 사용해야 좋은 판단이라고 생각하기 때문에 여기서 서술하였다.  

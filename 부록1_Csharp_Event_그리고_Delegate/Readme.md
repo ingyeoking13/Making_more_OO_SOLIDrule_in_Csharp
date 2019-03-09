@@ -215,7 +215,7 @@ class OtherClass_Method()
 개발자는 `event keyword`를 통해 클래스 책임에 대한 `design`을 명확할 수있는 척도라고만 기술할 수 있다.  
 
 프레임워크에서의 예로, `Button.Click` 는 해당 `Class`에서만 `Invoke` 할 수 있게 설계되었다.   
-즉, `event keyword`를 포함하며 `Button` 이 `Click`되었을 때만 내부적으로 `Invoke`할 수 있게끔 했다. ~~(그러나)~~[^1]     
+즉, `event keyword`를 포함하며 `Button` 이 `Click`되었을 때만 내부적으로 `Invoke`할 수 있게끔 했다. ~~(그러나)~~[<sup>1</sup>](#1)     
 
 ### (event) delegate 실제 사용은 ...
 
@@ -229,7 +229,7 @@ public delegate void NameChangedDelegate(string currentName, string newName);
 ````C#
 public delegate void NameChangedDelegate(object sender, NameChangedEventArgs e);
 ````
-`sender`는 해당 `event`를 일으킨 객체를 `this` 키워드를 통해 넘긴다. `Person` 등의 특정 클래스로 제한할 수 있지만, 관례상 *(정말 .NET 관례상이다.)* `object` 타입으로 한다. [^2][^3]   
+`sender`는 해당 `event`를 일으킨 객체를 `this` 키워드를 통해 넘긴다. `Person` 등의 특정 클래스로 제한할 수 있지만, 관례상 *(정말 .NET 관례상이다.)* `object` 타입으로 한다. [<sup>2</sup>](#2)  [<sup>3</sup>](#3)  
 
 그리고 위에서 사용되었던 `currentName`, `newName` 정보는 `...EventArgs`의 클래스로 `Wrapping`한 뒤 `EventArgs`를 상속한다.
 
@@ -294,7 +294,14 @@ public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- Action
 
 ***그런데 `Contravariant`가 무슨 용어인가요? 다음 부록 챕터`Covariant and Contravariant`를 보세요!***  
 
-\[^1] : 그러나, `wpf/UWP` 경우 `Button`은 `UIElement`를 상속하고 있으므로 `UIElement.RaiseEvent()`를 쓸 수 있다. 따라서, 다른 클래스에서도 (주로 페이지 자신, 부모페이지, 자식페이지)`Button.RaiseEvent`를 통해 `Click Event`를 발생하게끔 할 수 있다. 주관적인 판단으론 이런 경우, 특정 프레임워크에서만 가능한 방법론은 지양하는 것이 좋고, 좀 더 일반적인 방향으로 메서드(`delegate instance`) 들을 따로 저장해두어 공유하는 방향이 좀 더 건설적이라 맺음 짓고 싶다.   
-\[^2] : 다시 한번 강조하자면, 정말 관례상이다. 이것은 전통적인 `publisher/Notifier게시자`, `subscriber/observer관측자` 역할을 강조하기 위해, 주로 사용되는 객체 자체를 넘기는 `Pull` 방식의 일종이다. 더 노골적으로 `.NET`에서 제공하는 것이 `EventHandler<TeventArgs>(object sender, TEventArgs TArgs)` 이며, 사용법은 `eventHandlerName.Invoke(this, myEventArgs)`로 주로 사용된다. 더 엄밀한 사용법은 `event` 키워드를 앞에 붙여 `event EventHandler<TeventArgs>` 로 사용하며, 해당 필드를 가지고 있는 클래스에서만 `Invoke`한다.    
-\[^3] : 두번째 이유론, `delegate`의 `parameter`를 다음과 같이 특정 클래스로 제한하더라도, (예: `delegate void MYDeleagetType(Person p)`) 다음과 같은 메서드를 붙일 수 있다. (예: `method(object sender)`). 이것은 기본적으로 `delegate`가 `Parameter`에 대해 `Contravariant`를 지원하기 때문이다.  
+---  
+### FootNote
+
+1 <a class="anchor" id="1">그러나, `wpf/UWP` 경우 `Button`은 `UIElement`를 상속하고 있으므로 `UIElement.RaiseEvent()`를 쓸 수 있다. 따라서, 다른 클래스에서도 (주로 페이지 자신, 부모페이지, 자식페이지)`Button.RaiseEvent`를 통해 `Click Event`를 발생하게끔 할 수 있다. 주관적인 판단으론 이런 경우, 특정 프레임워크에서만 가능한 방법론은 지양하는 것이 좋고, 좀 더 일반적인 방향으로 메서드(`delegate instance`) 들을 따로 저장해두어 공유하는 방향이 좀 더 건설적이라 맺음 짓고 싶다.</a>   
+
+2
+<a class="anchor" id="2">다시 한번 강조하자면, 정말 관례상이다. 이것은 전통적인 `publisher/Notifier게시자`, `subscriber/observer관측자` 를 표현하는 `Observer Design Pattern` 에서 비롯된다. 주로 사용되는 객체 자체를 넘기는 `Pull` 방식의 일종이다. 더 노골적으로 `.NET`에서 제공하는 것이 `EventHandler<TeventArgs>(object sender, TEventArgs TArgs)` 이며, 사용법은 `eventHandlerName.Invoke(this, myEventArgs)`로 주로 사용된다. 더 엄밀한 사용법은 `event` 키워드를 앞에 붙여 `event EventHandler<TeventArgs>` 로 사용하며, 해당 필드를 가지고 있는 클래스에서만 `Invoke`한다.</a>      
+
+3
+<a class="anchor" id="3">두번째 이유론, `delegate`의 `parameter`를 다음과 같이 특정 클래스로 제한하더라도, (예: `delegate void MYDeleagetType(Person p)`) 다음과 같은 메서드를 붙일 수 있다. (예: `method(object sender)`). 이것은 기본적으로 `delegate`가 `Parameter`에 대해 `Contravariant`를 지원하기 때문이다.</a>    
 

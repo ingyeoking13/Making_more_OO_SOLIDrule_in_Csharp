@@ -6,7 +6,7 @@
         public ITimeState SetTimeEvening() => this;
         public ITimeState SetTimeNight() => new Night();
         public ITimeState TimeProceed() => new Night();
-        void ITimeState.eating()
+        public void eating()
         {
             //Do EveningEating();
         }

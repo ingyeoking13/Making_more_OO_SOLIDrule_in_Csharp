@@ -1014,7 +1014,9 @@ LG.NotifyNewCrewWanted();
 그러나 개인적 역량부족으로 그 필요성에 대해 아직은 잘 모르고, 우선 이 쯤에서 코어한 `Obserer Pattern Design` 기술을 마무리 하고싶다.  
 
 나, 또는 이 문서를 읽는 사람을 위해 아래의 링크를 남겨둔다.     
-[Should IObservable be preferred over events when exposing notifications?](https://stackoverflow.com/questions/24572366/should-iobservable-be-preferred-over-events-when-exposing-notifications-in-a-lib)
+[Should IObservable be preferred over events when exposing notifications?](https://stackoverflow.com/questions/24572366/should-iobservable-be-preferred-over-events-when-exposing-notifications-in-a-lib)   
+[IObservable vs Plain Events or Why Should I use IObservable?
+](https://stackoverflow.com/questions/3186981/iobservable-vs-plain-events-or-why-should-i-use-iobservable)
 
 
 

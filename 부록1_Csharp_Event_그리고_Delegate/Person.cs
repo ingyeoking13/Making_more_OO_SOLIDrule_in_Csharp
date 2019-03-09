@@ -36,9 +36,9 @@ namespace 부록1_Csharp_Event_그리고_Delegate
         }
 
         //public NameChangedDelegate OnNameChanged; //<-- delegate 
-        public event NameChangedDelegate OnNameChanged; //<-- fine. event delegate Type
+        //public event NameChangedDelegate OnNameChanged; //<-- fine. event delegate Type
         //public event EventHandler<NameChangedEventArgs> OnNameChanged; // <-- fine. event EventHandler<T>
-        //public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- fine. Action<in T,in T>  
+        public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- fine. Action<in T,in T>  
 
         public void Speak(string syntax)
         {
