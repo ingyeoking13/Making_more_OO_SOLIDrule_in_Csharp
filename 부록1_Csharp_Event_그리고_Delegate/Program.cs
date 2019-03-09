@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace 부록1_Csharp_Event_그리고_Delegate
 {
@@ -29,6 +25,7 @@ namespace 부록1_Csharp_Event_그리고_Delegate
 
             yohan.OnNameChanged += (s, e) => { Console.WriteLine($"hmmm, Do Not change more"); };
             yohan.Name = "gaelim"; // second change
+
         }
     }
 }

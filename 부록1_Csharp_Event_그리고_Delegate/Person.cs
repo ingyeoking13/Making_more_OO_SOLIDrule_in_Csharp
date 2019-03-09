@@ -1,5 +1,4 @@
 ﻿using System;
-using static 부록1_Csharp_Event_그리고_Delegate.Program;
 
 namespace 부록1_Csharp_Event_그리고_Delegate
 {
@@ -26,7 +25,8 @@ namespace 부록1_Csharp_Event_그리고_Delegate
         public string Name
         {
             get { return _name; }
-            set {
+            set
+            {
                 if (_name != value)
                 {
                     OnNameChanged?.Invoke(this, new NameChangedEventArgs(_name, value));
@@ -35,17 +35,14 @@ namespace 부록1_Csharp_Event_그리고_Delegate
             }
         }
 
-        //public NameChangedDelegate OnNameChanged;
-        public event NameChangedDelegate OnNameChanged;
+        //public NameChangedDelegate OnNameChanged; //<-- delegate 
+        public event NameChangedDelegate OnNameChanged; //<-- fine. event delegate Type
+        //public event EventHandler<NameChangedEventArgs> OnNameChanged; // <-- fine. event EventHandler<T>
+        //public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- fine. Action<in T,in T>  
 
         public void Speak(string syntax)
         {
             Console.WriteLine(syntax);
         }
     }
-
-    public class Name
-    {
-    }
-
 }

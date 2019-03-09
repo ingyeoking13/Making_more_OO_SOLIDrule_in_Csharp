@@ -531,10 +531,33 @@ I'm BlueBird.I received Message From SaramIn about samsung company
 잘 동작한다. 하지만 어떤 느낌이 들지 않는가? 코딩 스멜....   
 각자 클래스마다 원하는 함수가 있으니,인터페이스가 해당 메서드를 구현하게끔 강제하였다.  
 `Observer`, `Subject` 에 대해 여러 클래스가 묶여있다보니 `Person` 과 `HeadHunter` 는 `getNotifed` 행위에대해 전혀 알필요 없는 메서드를 강제로 가지게 되었다.   
-또 `Company`와 `HeadHunter`는 `Notify`에 대해 전혀 알필요없는 메서드를 알게되었다. 그런 함수들은 공백으로 남게 되었다.   
+
+````C#
+public class Person : IObserver
+{
+    public void headhunterGetNotifiedFromCompany(object sender, string Department, string Level, int experiencedWage) { }//empty
+}
+public class HeadHunter : IObserver, ISubject
+{
+    public void personGetNotifiedFromCompany(object sender, int newPersonWage) { } //empty
+}
+````
+또 `Company`와 `HeadHunter`는 `Notify`에 대해 전혀 알필요없는 메서드를 알게되었다.
+````C#
+public class Company : ISubject
+{
+    public void headhunterNotifyPerson(string companyName, string department, string level, int experiencedWage) { } // empty
+}
+public class HeadHunter : IObserver, ISubject
+{
+    public void companyNotifyObserver() { } //empty
+}
+````
+그런 함수들은 공백으로 남게 되었다. 선택에 따라선, `throw Exception`을 던질 수 있다.   
+
 요약하자면, 각각 클래스는 인터페이스에 제시된 함수들 중 부분집합에만 관심이 있지만, 전체 함수 집합을 다 알고 있어야 하는 것이다.    
 
-이전까지 K씨는 인터페이스가 마법의 도구처럼 느껴졌지만, 이번만큼은 아니다. 그도 어떤 구린 냄새를 맡고있는 것이다.  
+이전까지 K씨는 인터페이스가 마법의 도구처럼 느껴졌지만, 이번만큼은 아닌 것 같았다. 그도 자신의 소스에서 어떤 구린 냄새를 맡고있는 것이다.  
 어쨌든 그는 여기서 소스를 마무리 하기로 했다. 
 그의 소스 작성시간은 1시간 정도가 걸렸다. 이전보다 2배가 걸린셈이다.     
 
@@ -865,7 +888,7 @@ public void companyNotifyObserver()
 1 `notify`의 인자를 일반화 시킬수 있었고,  
 2 `Observer` 객체들은 자기가 수행하는 함수만 가질수 있게 되었다. (유지보수 좋음)  
 
-### 6 .Net Solution
+### 6 .Net Solution (Old version)
 
 생각해보면 그냥 `Subject`에 `delegate`를 두고 해당 `Observer` 객체의 함수를 직접적으로 참조하면 될 것 이다.  
 `EventHandler<TEventArgs>`를 사용해서 해결한다. 
@@ -981,7 +1004,17 @@ LG.NotifyNewCrewWanted();
 ````
 어떤가?   
 소스가 훨씬 간편하고 가독성이 좋다.  
-:smile:  
+:Smile:  
+
+### 6 .Net Solution2 (Newest version)
+
+`Observer Design Pattern`에서 `delegate Type`을 쓰는 것은 고전적이고 유명한 방법이다.  
+그러나, [msdn](https://docs.microsoft.com/ko-kr/dotnet/standard/events/observer-design-pattern)에 따르면, `IObservable<T>` 인터페이스를 따르는 것을 추천한다. (하지만 `event Category`에 있다...)   
+`IObservable<T>`는 비동기 프로그래밍(`Rx`)가 대두되며 사용되는 것으로 알고 있다.  
+그러나 개인적 역량부족으로 그 필요성에 대해 아직은 잘 모르고, 우선 이 쯤에서 코어한 `Obserer Pattern Design` 기술을 마무리 하고싶다.  
+
+나, 또는 이 문서를 읽는 사람을 위해 아래의 링크를 남겨둔다.     
+[Should IObservable be preferred over events when exposing notifications?](https://stackoverflow.com/questions/24572366/should-iobservable-be-preferred-over-events-when-exposing-notifications-in-a-lib)
 
 
 
