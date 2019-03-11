@@ -301,10 +301,10 @@ public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- Action
 
 1
 <a class="anchor" id="1">이 점에서 **`event`와 `delegate`는 어떤 포함 관계인가?**  논쟁이 시작 될 수있다. 아래 3가지 이야기를 보자.    
-*1* `event keyword`와 `delegate keyword`는 명백히 다르다. 현재 `C#7.0`, `.NET framework4.7` 기준 개발자 단에서 `delegate`만 이용해서 절대 `event keyword`의 기능을 만들 수 없다. 그리고 `event keyword`만 가지고 `delegate`를 만들 수 없다.  
+*1* `event keyword`와 `delegate keyword`는 명백히 다르다. 개발자 단에서 `delegate`만 이용해서는 절대로 순수한 `event keyword`를 대체할 수 없다. 그리고 `event keyword`만 가지고 `delegate`를 만들 수 없다. 하지만 `delegate`를 잘 꾸며서 유사한 `event`를 만들 수 있다. 아래 *참조1* *참조2* 링크를 통해 확인할 수 있다.   
 *2* 그렇지만 일반적인 대화에서 `event`를 사용해주세요 라고 하면 클래스간 통신을 위해 `(event) delegate`와 같이 임의의 메서드를 직접 참조할 수 있는 `field`를 만들라는 것이다. 그 경우의 `event`는 `delegate`를 포함한다고 할 수있다.   
 *3* 또는 문법적인 이유에서는 `delegate`가 `event`를 포함한다고 할 수 있다. `event`의 `syntax`는 `event delegate`이다. 여기서 `event keyword`는 `delegate`를 꾸며주는 수식어 이기 때문에 `event delegate`는 `delegate`의 일종이다. 라고 할 수 있다. 따라서 이 경우에선 `delegate`는 `event`를 포함한다고 할 수 있다.   
-만약 이런 논쟁이 있는 경우, 자신이 어떤것을 표현하고자 하는가 명백하게 밝힐 필요가 있다.    
+만약 이런 논쟁이 있는 경우, 자신이 어떤것을 표현하고자 하는가 명백하게 밝힐 필요가 있다. [참조1](https://silent1002.blog.me/10086120655) , [참조2](https://stackoverflow.com/questions/36530439/how-to-decompile-net-events)      
 </a>
 
 2 
