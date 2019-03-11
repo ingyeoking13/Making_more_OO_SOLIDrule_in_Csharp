@@ -2,7 +2,7 @@
 
 namespace 부록1_Csharp_Event_그리고_Delegate
 {
-    //public delegate void NameChangedDelegate(string currentName, string newName);
+    //delegate void NameChangedDelegate(string currentName, string newName);
     public delegate void NameChangedDelegate(object sender, NameChangedEventArgs e);
 
     public class NameChangedEventArgs : EventArgs
@@ -15,7 +15,6 @@ namespace 부록1_Csharp_Event_그리고_Delegate
             CurrentName = currentName;
             NewName = newName;
         }
-
     }
 
     public class Person
@@ -35,10 +34,10 @@ namespace 부록1_Csharp_Event_그리고_Delegate
             }
         }
 
-        //public NameChangedDelegate OnNameChanged; //<-- delegate 
+        public NameChangedDelegate OnNameChanged; //<-- delegate 
         //public event NameChangedDelegate OnNameChanged; //<-- fine. event delegate Type
         //public event EventHandler<NameChangedEventArgs> OnNameChanged; // <-- fine. event EventHandler<T>
-        public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- fine. Action<in T,in T>  
+        //public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- fine. Action<in T,in T>  
 
         public void Speak(string syntax)
         {

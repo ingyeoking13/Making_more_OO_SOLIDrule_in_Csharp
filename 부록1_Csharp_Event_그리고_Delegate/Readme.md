@@ -13,9 +13,11 @@
 ### Event보다 먼저 Delegate를 살펴보자
 
 `event`의 문법은 `delegate`를 **동반**하기 때문에 `delegate`를 먼저 살펴보는 것이 현명하다.  
-혼동해서는 안되는 점은 `delegate`가 `event`를 포함하는 관계가 아니며, `event`가 `delegate`를 포함하는 관계가 아니다. `(delegate != event)`  
-표현 그대로 `event keyword`는 `delegate`를 **동반** 한다.    
-문서에서 기술하겠지만, `delegate type`은 단독으로 쓰일 수 있지만, `event`는 단독으로 쓰일 수 없고 `delegate`를 **동반** 해야한다.        
+우선 확실히 해야할 것은, 실생활에서 `event`는 **두 가지** 모습을 띈다.  
+* 첫 번째의 경우, `keword`로써의 `event keyword` 자체이다. 누군가 당신에게 "`event keyword`를 앞에 붙여주세요" 라고 하면 당신이 작성한 `delegate` 앞에 `event`를 붙여야한다.  
+* 두 번째의 경우, `class member field`로써의 `(event) delegate` 이다. 누군가 당신에게 "`event`를 작성해주세요" 라고하면, 클래스간 통신을 위해 임의의 메서드를 참조할 수 있는 `field`를 작성해야한다. `delegate`, `event delegate`, `event EventHandler<T>` 또는 `Action` 따위를 작성해야한다.[<sup>1</sup>](#1)    
+
+위 예제에서 유추 할 수 있듯, `delegate type`은 단독으로 쓰일 수 있지만, `event`는 단독으로 쓰일 수 없고 `delegate`를 **동반** 해야한다.        
 
 `delegate type` 변수는 간단하게 말하면 메서드를 가르킨다. 좀 더 엄밀히 말하자면 메서드를 `delegate`로 Wrapping 한 객체를 가르킨다. 이 객체를 `delegate instance`라 한다.  [C#2.0 이전에서는 delegate로 항상 Wrapping 해서 사용해야했다.](https://docs.microsoft.com/ko-kr/dotnet/csharp/programming-guide/delegates/how-to-declare-instantiate-and-use-a-delegate)   
 
@@ -215,7 +217,7 @@ class OtherClass_Method()
 개발자는 `event keyword`를 통해 클래스 책임에 대한 `design`을 명확할 수있는 척도라고만 기술할 수 있다.  
 
 프레임워크에서의 예로, `Button.Click` 는 해당 `Class`에서만 `Invoke` 할 수 있게 설계되었다.   
-즉, `event keyword`를 포함하며 `Button` 이 `Click`되었을 때만 내부적으로 `Invoke`할 수 있게끔 했다. ~~(그러나)~~[<sup>1</sup>](#1)     
+즉, `event keyword`를 포함하며 `Button` 이 `Click`되었을 때만 내부적으로 `Invoke`할 수 있게끔 했다. ~~(그러나)~~[<sup>2</sup>](#2)     
 
 ### (event) delegate 실제 사용은 ...
 
@@ -229,7 +231,7 @@ public delegate void NameChangedDelegate(string currentName, string newName);
 ````C#
 public delegate void NameChangedDelegate(object sender, NameChangedEventArgs e);
 ````
-`sender`는 해당 `event`를 일으킨 객체를 `this` 키워드를 통해 넘긴다. `Person` 등의 특정 클래스로 제한할 수 있지만, 관례상 *(정말 .NET 관례상이다.)* `object` 타입으로 한다. [<sup>2</sup>](#2)  [<sup>3</sup>](#3)  
+`sender`는 해당 `event`를 일으킨 객체를 `this` 키워드를 통해 넘긴다. `Person` 등의 특정 클래스로 제한할 수 있지만, 관례상 *(정말 .NET 관례상이다.)* `object` 타입으로 한다. [<sup>3</sup>](#3)  [<sup>4</sup>](#4)  
 
 그리고 위에서 사용되었던 `currentName`, `newName` 정보는 `...EventArgs`의 클래스로 `Wrapping`한 뒤 `EventArgs`를 상속한다.
 
@@ -283,8 +285,8 @@ public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- Action
 
 **무엇이 다른가?**  
 
-* `EventHandler<T>`는 기본적으로 `object sender` 라는 객체를 던져줘야한다. 따라서 사용시 `OnNameChanged(this, T)` 으로 사용한다.   
-* 그러나 `Action`은 명시적으로 `<classType(또는 object), T>` 등으로 정의해줘야, `OnNameChanged(this, T)` 로 사용할 수 있다.  
+* `EventHandler<T>`는 기본적으로 `object sender` 라는 객체를 던져줘야한다. 따라서 사용시 `OnNameChanged(this, T)` 으로 사용한다. 그리고 `EventHandler<T>`는 `where T : EventArgs`로 제한되 ~~(었던적이있었)~~ 다. [<sup>5</sup>](#5)  
+* 그러나 `Action`은 명시적으로 `<classType(또는 object), T>` 등으로 정의해줘야, `OnNameChanged(this, T)` 로 사용할 수 있다. 
 * `EventHandler`는 이름의 의도와 맞게 `event keyword`를 동반한 `event EventHandler<T>`로 사용하는 것이 좋다. 반대로 `Action`은 `event`키워드를 붙이지 않는다.  
 
 **`<in T>`와 `<T>` 가 다릅니다. EventArgs는 `<in>` 키워드가 없으니 `contravariant`를 지원 안하는 것 아닌가요?**  
@@ -297,11 +299,23 @@ public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- Action
 ---  
 ### FootNote
 
-1 <a class="anchor" id="1">그러나, `wpf/UWP` 경우 `Button`은 `UIElement`를 상속하고 있으므로 `UIElement.RaiseEvent()`를 쓸 수 있다. 따라서, 다른 클래스에서도 (주로 페이지 자신, 부모페이지, 자식페이지)`Button.RaiseEvent`를 통해 `Click Event`를 발생하게끔 할 수 있다. 주관적인 판단으론 이런 경우, 특정 프레임워크에서만 가능한 방법론은 지양하는 것이 좋고, 좀 더 일반적인 방향으로 메서드(`delegate instance`) 들을 따로 저장해두어 공유하는 방향이 좀 더 건설적이라 맺음 짓고 싶다.</a>   
+1
+<a class="anchor" id="1">이 점에서 **`event`와 `delegate`는 어떤 포함 관계인가?**  논쟁이 시작 될 수있다. 아래 3가지 이야기를 보자.    
+*1* `event keyword`와 `delegate keyword`는 명백히 다르다. 현재 `C#7.0`, `.NET framework4.7` 기준 개발자 단에서 `delegate`만 이용해서 절대 `event keyword`의 기능을 만들 수 없다. 그리고 `event keyword`만 가지고 `delegate`를 만들 수 없다.  
+*2* 그렇지만 일반적인 대화에서 `event`를 사용해주세요 라고 하면 클래스간 통신을 위해 `(event) delegate`와 같이 임의의 메서드를 직접 참조할 수 있는 `field`를 만들라는 것이다. 그 경우의 `event`는 `delegate`를 포함한다고 할 수있다.   
+*3* 또는 문법적인 이유에서는 `delegate`가 `event`를 포함한다고 할 수 있다. `event`의 `syntax`는 `event delegate`이다. 여기서 `event keyword`는 `delegate`를 꾸며주는 수식어 이기 때문에 `event delegate`는 `delegate`의 일종이다. 라고 할 수 있다. 따라서 이 경우에선 `delegate`는 `event`를 포함한다고 할 수 있다.   
+만약 이런 논쟁이 있는 경우, 자신이 어떤것을 표현하고자 하는가 명백하게 밝힐 필요가 있다.    
+</a>
 
-2
-<a class="anchor" id="2">다시 한번 강조하자면, 정말 관례상이다. 이것은 전통적인 `publisher/Notifier게시자`, `subscriber/observer관측자` 를 표현하는 `Observer Design Pattern` 에서 비롯된다. 주로 사용되는 객체 자체를 넘기는 `Pull` 방식의 일종이다. 더 노골적으로 `.NET`에서 제공하는 것이 `EventHandler<TeventArgs>(object sender, TEventArgs TArgs)` 이며, 사용법은 `eventHandlerName.Invoke(this, myEventArgs)`로 주로 사용된다. 더 엄밀한 사용법은 `event` 키워드를 앞에 붙여 `event EventHandler<TeventArgs>` 로 사용하며, 해당 필드를 가지고 있는 클래스에서만 `Invoke`한다.</a>      
+2 
+<a class="anchor" id="2">그러나, `wpf/UWP` 경우 `Button`은 `UIElement`를 상속하고 있으므로 `UIElement.RaiseEvent()`를 쓸 수 있다. 따라서, 다른 클래스에서도 (주로 페이지 자신, 부모페이지, 자식페이지)`Button.RaiseEvent`를 통해 `Click Event`를 발생하게끔 할 수 있다. 주관적인 판단으론 이런 경우, 특정 프레임워크에서만 가능한 방법론은 지양하는 것이 좋고, 좀 더 일반적인 방향으로 메서드(`delegate instance`) 들을 따로 저장해두어 공유하는 방향이 좀 더 건설적이라 맺음 짓고 싶다.</a>   
 
 3
-<a class="anchor" id="3">두번째 이유론, `delegate`의 `parameter`를 다음과 같이 특정 클래스로 제한하더라도, (예: `delegate void MYDeleagetType(Person p)`) 다음과 같은 메서드를 붙일 수 있다. (예: `method(object sender)`). 이것은 기본적으로 `delegate`가 `Parameter`에 대해 `Contravariant`를 지원하기 때문이다.</a>    
+<a class="anchor" id="3">다시 한번 강조하자면, 정말 관례상이다. 이것은 전통적인 `publisher/Notifier게시자`, `subscriber/observer관측자` 를 표현하는 `Observer Design Pattern` 에서 비롯된다. 주로 사용되는 객체 자체를 넘기는 `Pull` 방식의 일종이다. 더 노골적으로 `.NET`에서 제공하는 것이 `EventHandler<TeventArgs>(object sender, TEventArgs TArgs)` 이며, 사용법은 `eventHandlerName.Invoke(this, myEventArgs)`로 주로 사용된다. 더 엄밀한 사용법은 `event` 키워드를 앞에 붙여 `event EventHandler<TeventArgs>` 로 사용하며, 해당 필드를 가지고 있는 클래스에서만 `Invoke`한다.</a>      
+
+4
+<a class="anchor" id="4">두번째 이유론, `delegate`의 `parameter`를 다음과 같이 특정 클래스로 제한하더라도, (예: `delegate void MYDeleagetType(Person p)`) 다음과 같은 메서드를 붙일 수 있다. (예: `method(object sender)`). 이것은 기본적으로 `delegate`가 `Parameter`에 대해 `Contravariant`를 지원하기 때문이다.</a>    
+
+5
+<a class="anchor" id="5">따라서 `EventHandler<T>`를 사용할 때 관례상 `T Type`은 `EventArgs`를 상속하는 것이 좋다. 특정 개발 프레임워크(`winform`, `wpf`, `UWP`, `ASP.NET` 등)에서 개발한다면 권장 사용해야하는 것으로 알고 있다. `Action`에서의 `T`는 `EventArgs`를 상속하지 않고서 자유로이 사용해도 좋다.</a>   
 

@@ -121,6 +121,6 @@ static void Main(string[] args)
 만약, 제가 없더라도, 다른 개발자분이 Iselector 인터페이스로 
 구현된 클래스를 한개 만드셔서 요구사항 반영하셔서 만들면되요.
 ````  
-:smile:
+:Smile:
 
 
