@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace _4_객체를_만드는_이유2.Second
+﻿namespace _4_객체를_만드는_이유2.Second
 {
     class Program
     {
+        /*
         static void Main(string[] args)
         {
 
@@ -37,5 +35,6 @@ namespace _4_객체를_만드는_이유2.Second
 
             person.Exit();
         }
+        */
     }
 }

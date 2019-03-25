@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace _4_객체를_만드는_이유2.Third
+﻿namespace _4_객체를_만드는_이유2.Third
 {
     class Program
     {
+        /*
         static void Main(string[] args)
         {
 
@@ -12,6 +10,6 @@ namespace _4_객체를_만드는_이유2.Third
             algorithm.doJoinAndExit("Ordinary", "teacher");
             algorithm.doJoinAndExit("International", "student");
         }
-        
+        */
     }
 }

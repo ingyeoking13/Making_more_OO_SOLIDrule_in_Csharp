@@ -1,4 +1,4 @@
-## 객체를 만드는 이유2 
+## Abstract Factory Pattern
 
 ***객체를 만드는 이유가 객체를 만들기 위해서라고요?***
 
@@ -12,7 +12,7 @@ A씨는 개념적으로 동일한 것들이라는 느낌을 받을 때는 동일한 수행을 인터페이스로 �
 
 객체를 생성하는 것이 어떤 문제를 동반하는지 살펴볼것이다. 
 
-### 1. 서막
+### 1. Introduction
 
 다음 의뢰를 한번 살펴보자.  
 
@@ -182,9 +182,10 @@ A씨는 다음과 같은 메일을 받았다.
 저희 재단이 다른 계열의 학교도 운영중입니다. 
 그 학교는 국제학교라서 학생, 선생님, 부모님이 기존에 작성된 것과 공통적인 부분도 있지만,  
 다른 부분도 있거든요. 그래서 다르게 취급하고 싶습니다.  
+따라서 새로운 클래스를 생성 해주셔야 할것 같은데요?   
 ````
 
-A씨는 각각의 `Ordianry, InternationalStudent`를 `Student`로 묶어주었다.  
+A씨는 각각의 `Ordianry, InternationalStudent`를 생성하고, `Student`를 공통적으로 상속하였다.    
 `Parent` `Teacher` 모두 그렇게 해주었다.  
 
 ````C#
@@ -216,6 +217,142 @@ public class OrdinaryParent : Parent { }
 public class InternationalParent : Parent { }
 ````
 
+그리고 이전 `Factory` 에서 `Student`, `Parent`, `Teacher`를 반환했다.   
+이번에는 `AbstractFactory`를 생성해서, 각각의 `Student`, `Parent`, `Teacher`를 반환하는 `Factory`를 만들어준다.  
+
+````C#
+public abstract class AbstractClassRoomUserFactory
+{
+    public abstract IClassRoomUser createClassRoomUser(string args);
+}
+
+public class OrdinaryClassRoomUserFactory : AbstractClassRoomUserFactory
+{
+    public override IClassRoomUser createClassRoomUser(string args)
+    {
+        IClassRoomUser ret = null;
+        if (args == "student") ret= new OrdinaryStudent();
+        else if (args == "teacher") ret= new OrdinaryTeacher();
+        else if (args == "parent") ret= new OrdinaryParent();
+        return ret;
+    }
+}
+
+public class InternationalClassRoomUserFactory : AbstractClassRoomUserFactory
+{
+    public override IClassRoomUser createClassRoomUser(string args)
+    {
+        IClassRoomUser ret = null;
+        if (args == "student") ret= new InternationalStudent();
+        else if (args == "teacher") ret= new InternationalTeacher();
+        else if (args == "parent") ret= new InternationalParent();
+        return ret;
+    }
+}
+````
+
+그리고 이 `Factory`를 사용하는 방법은 아래와 같다.  
+해당 `Factory`를 쓰는 부분을 `Main` 함수보다는 `Factory`를 사용하는 클래스를 명확하게 하기위해 `Algorithm` 클래스를 만들었다.  
+기존에 작성된 함수들은 `Algorithm` 클래스 내부로 들어가게된다.  
+
+````C#
+public class Algorithm
+{
+    public void doJoinAndExit(string arg0, string arg1)
+    {
+        AbstractClassRoomUserFactory factory = new OrdinaryClassRoomUserFactory();
+        if (arg0 == "International") factory = new InternationalClassRoomUserFactory();
+
+        IClassRoomUser person = factory.createClassRoomUser(arg1);
+        person.Join();
+        person.Exit();
+    }
+
+    public void doJoinAndStay(string arg0, string arg1)
+    {
+        AbstractClassRoomUserFactory factory = new OrdinaryClassRoomUserFactory();
+        if (arg0 == "International") factory = new InternationalClassRoomUserFactory();
+
+        IClassRoomUser person = factory.createClassRoomUser(arg1);
+        person.Join();
+    }
+    //...
+}
+static void Main(string[] args)
+{
+    Algorithm algorithm = new Algorithm();
+    algorithm.doJoinAndExit("Ordinary", "teacher");
+    algorithm.doJoinAndExit("International", "student");
+}
+````
+
+이 것이 가장 간단한 `Abstract Factory Pattern`이다.   
+우선 먼저 어떤 클래스가 연관이 있는지 정리해보자.  
+
+`AbstractFactory`는 두 가지 `concrete factory`를 가지고 있다.   
+그리고 각 각의 `factory`는 `createClassRoomUser` 메서드를 통해 `IClassRoomUser` 객체를 반환한다.  
+이 경우 각각의 `concrete factory`가 각각의 `Ordinary` - `International IClassRoomUser`를 반환하고 있다.  
+이 것을 가장 간단한 `AbstractFactory`라 할 수 있다.  
+
+### 소스 다듬기  
+
+이 소스는 `Abstract Factory`에 대한 골격을 제공하지만, 조금 더 소스를 개선 시킬 방향이 있다.  
+
+아래 소스를 보자.  
+
+````C#
+public class Algorithm
+{
+    public void doJoinAndExit(string arg0, string arg1)
+    {
+        AbstractClassRoomUserFactory factory = new OrdinaryClassRoomUserFactory();
+        if (arg0 == "International") factory = new InternationalClassRoomUserFactory();
+    }
+}
+````
+
+위 소스에서 `Algorithm` 클래스는 `Factory`를 사용한다. 이 클래스를 `Factory Consumer` 라고도 한다.  
+보통 `Factory Consumer` 들은 언제든지 `Factory`를 사용하게 준비되어 있어야하므로, `member field`로 가진다.  
+이 것을 클래스의 `dependecy`라고 하며, 보통 클래스 생성자에서 주입하는 `dependency Injection`을 주로 사용한다. 
+
+따라서 `Algorithm Class`는 다음과 같이 바뀐다.  
+
+````C#
+public class Algorithm
+{
+    private readonly AbstractClassRoomUserFactory factory;
+    public Algorithm(AbstractClassRoomUserFactory factory)
+    {
+        this.factory = factory;
+    }
+
+    public void doJoinAndExit(string arg)
+    {
+        IClassRoomUser person = factory.createClassRoomUser(arg);
+        person.Join();
+        person.Exit();
+    }
+}
+````
+
+그리고 `Algorithm`을 사용하는 클라이언트 쪽에서는 다음과 같은 소스를 작성할 수 있다.  
+````C#
+static void Main(string[] args)
+{
+    Algorithm algorithm = new Algorithm(new OrdinaryClassRoomUserFactory());
+    algorithm.doJoinAndExit("teacher");
+    algorithm.doJoinAndExit("student");
+}
+````
+
+여기까지가 단순한 `Abstract Factory` 이다.   
+
+### 마무리하며 
+
+`Object`를 만드는 패턴 중 하나인 `Abstract Factory`는 이번 예제만으로는 생산성이 좋아보이지만, 실제로 사용하기엔 여러 약점을 가지고 있다.   
+이번 예제는 잘 정의된 문제를 가지고 사용했지만, 실제로 사용할 때엔 단순한 `Abstract Factory`를 쓰는 것만으로는 큰 생산성을 제공해주기가 힘들다.    
+그리고 `teacher`, `student`를 `string` 타입으로 넘어가는 것은 좋은 방법이 아니다. 명확한 `spelling`을 요구하며 `Runtime Error`를 유발하기 때문이다.   
+따라서 다음 포스팅에서는 `Abstract Factory`와 유사하게 클래스를 만드는 것에 집중한 디자인 패턴인, `Builder` 에 대해서 이야기를 해보고자 한다.  
 
 
 

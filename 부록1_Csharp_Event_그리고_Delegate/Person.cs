@@ -44,4 +44,5 @@ namespace 부록1_Csharp_Event_그리고_Delegate
             Console.WriteLine(syntax);
         }
     }
+    public class Student : Person { }
 }

@@ -19,13 +19,12 @@ namespace 부록1_Csharp_Event_그리고_Delegate
 
             yohan.Name = "Yohan"; // set
 
-            yohan.OnNameChanged += (s,e) => { Console.WriteLine($"Name change from {e.CurrentName} to {e.NewName}"); };
+            yohan.OnNameChanged += (s, e) => { Console.WriteLine($"Name change from {e.CurrentName} to {e.NewName}"); };
 
             yohan.Name = "Kimchi"; // first change
 
             yohan.OnNameChanged += (s, e) => { Console.WriteLine($"hmmm, Do Not change more"); };
             yohan.Name = "gaelim"; // second change
-
 
         }
     }

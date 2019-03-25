@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _4_객체를_만드는_이유는1
+﻿namespace _4_decoratorPattern
 {
     public class Student: Person
     {

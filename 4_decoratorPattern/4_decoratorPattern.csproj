@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{77DDF6B7-D0D9-43C6-8805-0B4C3B706379}</ProjectGuid>
+    <ProjectGuid>{396AF973-9DBF-4257-8B7A-0DFB4A192A5C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_4_객체를_만드는_이유2</RootNamespace>
-    <AssemblyName>4_객체를_만드는_이유2</AssemblyName>
+    <RootNamespace>_4_decoratorPattern</RootNamespace>
+    <AssemblyName>4_decoratorPattern</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,18 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Compile Include="Freeter.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Programming.cs" />
+    <Compile Include="Student.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="First\IClassRoomUser.cs" />
-    <Compile Include="First\Program.cs" />
-    <Compile Include="Third\Algorithm.cs" />
-    <Compile Include="Third\ClassRoomUserFactory.cs" />
-    <Compile Include="Third\IClassRoomUser.cs" />
-    <Compile Include="Third\Program.cs" />
-    <Compile Include="Second\IClassRoomUser.cs" />
-    <Compile Include="Second\PersonFactory.cs" />
-    <Compile Include="Second\Program.cs" />
+    <None Include="readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

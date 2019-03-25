@@ -14,8 +14,8 @@
 
 `event`의 문법은 `delegate`를 **동반**하기 때문에 `delegate`를 먼저 살펴보는 것이 현명하다.  
 우선 확실히 해야할 것은, 실생활에서 `event`는 **두 가지** 모습을 띈다.  
-* 첫 번째의 경우, `keword`로써의 `event keyword` 자체이다. 누군가 당신에게 "`event keyword`를 앞에 붙여주세요" 라고 하면 당신이 작성한 `delegate` 앞에 `event`를 붙여야한다.  
-* 두 번째의 경우, `class member field`로써의 `(event) delegate` 이다. 누군가 당신에게 "`event`를 작성해주세요" 라고하면, 클래스간 통신을 위해 임의의 메서드를 참조할 수 있는 `field`를 작성해야한다. `delegate`, `event delegate`, `event EventHandler<T>` 또는 `Action<T>` 따위를 작성해야한다.[<sup>1</sup>](#1)    
+* 첫 번째의 경우, `keword`로써의 `event keyword` 자체이다. "`event keyword`를 사용해주세요." 라고 하면 당신이 작성한 `delegate` 앞에 `event`를 붙여야한다.  
+* 두 번째의 경우, `notify` 로써의 `(event) delegate` 이다. 누군가 당신에게 "`event`를 작성해주세요" 라고하면, 클래스간 통신을 위해 임의의 메서드를 참조할 수 있는 `member field`를 작성해야한다. `delegate`, `event delegate`, `event EventHandler<T>` 또는 `Action<T>` 따위를 작성해야한다.[<sup>1</sup>](#1)    
 
 위 예제에서 유추 할 수 있듯, `delegate type`은 단독으로 쓰일 수 있지만, `event`는 단독으로 쓰일 수 없고 `delegate`를 **동반** 해야한다.        
 
@@ -300,11 +300,12 @@ public Action<Person,NameChangedEventArgs> OnNameChanged; // <-- Action
 ### FootNote
 
 1
-<a class="anchor" id="1">이 점에서 **`event`와 `delegate`는 어떤 포함 관계인가?**  논쟁이 시작 될 수있다. 아래 3가지 이야기를 보자.    
-*1* `event keyword`와 `delegate keyword`는 명백히 다르다: 개발자 단에서 `delegate`만 이용해서는 절대로 순수한 `event keyword`를 대체할 수 없다. 그리고 `event keyword`만 가지고 `delegate`를 만들 수 없다. 하지만 `delegate`를 잘 꾸며서 `event keyword`가 제공하는 기능을 유사하게 만들 수 있다. 아래 *참조1* *참조2* 링크를 통해 확인할 수 있다. 그렇다하더라도 `.NET Framework`에서 `event keyword`가 제공하는 기능을 온전히 가지지 못 한다. 굳이 제한적으로 표현하자면, `event keyword`를 붙이게되면 `delegate`를 `private field`로 가지고 `+= Add, -= Remove`를 `public method`로 갖는 `wrapping class`를 얻을 수 있다. 그러나 더 깊은 지점에서 다른게 있을 것이다. 이러한 점에서 `delegate`로 `event`를 대체한다는 시도는 지양 하는게 좋다고 생각한다.     
-*2* `event`가 `delegate`를 포함한다: 일반적인 대화에서 `event`를 사용해주세요 라고 하면 클래스간 통신을 위해 `(event) delegate`와 같이 임의의 메서드를 직접 참조할 수 있는 `field`를 만들라는 것이다. 그 경우의 `event`는 `delegate`를 포함한다고 할 수있다.    
-*3* `delegate`가 `event`를 포함한다:  문법적인 이유에서는 `delegate`가 `event`를 포함한다고 할 수 있다. `event`의 `syntax`는 `event delegate`이다. 여기서 `event keyword`는 `delegate`를 꾸며주는 수식어 이고 그렇게 동작하기 때문에 `event delegate`는 `delegate`의 일종이다. 라고 할 수 있다. 따라서 이 경우에선 `delegate`는 `event`를 포함한다고 할 수 있다.   
-만약 이런 논쟁이 있는 경우, 자신이 어떤것을 표현하고자 하는가 명백하게 밝힐 필요가 있다. [참조1](https://silent1002.blog.me/10086120655) , [참조2](https://stackoverflow.com/questions/36530439/how-to-decompile-net-events)      
+<a class="anchor" id="1">이 점에서 **`event`와 `delegate`는 어떤 관계인가?**  논쟁이 시작 될 수있다. 간결하게 말하자면 `event`와 `delegate`는 사용 용도가 거의 동일하고, `event has a delegate`라 할 수 있다. 종종, 착각할 수 있는 세가지 예를 써보겠다.     
+*1* `event keyword`와 `delegate keyword`는 명백히 다르다: 개발자 단에서 `delegate`만 이용해서는 절대로 순수한 `event keyword`를 대체할 수 없다. 그리고 `event keyword`만 가지고 `delegate`를 만들 수 없다. 이건 사실이다. 하지만, `event`와 `delegate`가 `keyword`로써는 다른 것이지만 `event`와 `delegate`의 역할으로써 성격은 굉장히 결이 같기 때문에 명백히 다르다라고 하기엔 조금 부담스럽다.      
+*2* `event`가 `delegate`를 포함한다: `event keyword`를 붙이게 되면 `delegate field`를 가진 `클래스`를 얻을 수 있다. `참조1`참고. 따라서, `has a` 관계이므로 포함한다고 할 수 있다.  
+*3* `delegate`가 `event`를 포함한다: `event`의 `syntax`는 `event delegate`이다. 여기서 `event keyword`는 `delegate`를 꾸며주는 수식어기 때문에 `event delegate`는 `delegate`의 일종이라고도 표현할 수도 있다. 그리고 `참조1`의 이유도 있긴 한데, `event` 키워드를 붙이면 `private delegate field` 에 연산 `+=, -=(각각 delegate Add, Remove)`만 노출되고, 다른 기능은 없기 때문이다. 이는 `delegate`에 연결된 메서드를 함부로 호출할 수 없게 해주는, 클래스 책임 설계에 개념 기반을 둔다. 따라서 `외부에서 호출이 제한된 delegate`이라 할 수 있다.    
+또는, 일반적인 프로그래밍에서 `event`를 사용해주세요 라고 하면 클래스간 통신을 위해 다른 클래스의 메서드를 직접 참조할 수 있는 `member field`를 만드는 것이다. 하지만 이 경우는 프로그래밍의 일반적인 이야기이다.   
+만약 위 같은 논쟁이 있는 경우, 간단하게 `event`는 `delegate`와 `has a` 관계에 있다라고 표현하면 된다. [참조1](https://silent1002.blog.me/10086120655) , [참조2](https://stackoverflow.com/questions/36530439/how-to-decompile-net-events)      
 </a>
 
 2 
