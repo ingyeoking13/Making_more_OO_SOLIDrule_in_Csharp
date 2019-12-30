@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 namespace 부록3_Delegate_and_weakReference
 {
@@ -16,7 +17,7 @@ namespace 부록3_Delegate_and_weakReference
         public delegate void OnChangedDelegate();
 
         private bool _switch;
-        public bool Switch { get { return _switch; } set { _switch = value; if (Switch) onSwitchChange?.Invoke(); } }
+        public bool Switch { get { return _switch; } set { _switch = value; if(Switch) onSwitchChange?.Invoke(); } }
         public event OnChangedDelegate onSwitchChange;
     }
 
@@ -39,21 +40,19 @@ namespace 부록3_Delegate_and_weakReference
     public class ViewCycle2
     {
         private bool _switch;
-        public bool Switch
-        {
-            get { return _switch; }
-            set
-            {
+        public bool Switch { 
+            get { return _switch; } 
+            set {
                 _switch = value;
                 if (_switch)
                 {
                     foreach (var i in onSwitchChangeSubscribeList)
                     {
-                        if (i._weakReference.Target != null)
+                        if (i._weakReference.Target != null) 
                             i._method.CreateDelegate(i._delegateType, i._weakReference.Target).DynamicInvoke();
                     }
                 }
-            }
+            } 
         }
         public List<DelegateReference> onSwitchChangeSubscribeList = new List<DelegateReference>();
     }
@@ -108,7 +107,7 @@ namespace 부록3_Delegate_and_weakReference
             // =====  beauty of Weak Reference  ==== 
             ViewCycle2 vc2 = new ViewCycle2();
 
-            ((Action)(() =>
+            ((Action)(()=>
             {
                 Person a = new Person("yohan", 29);
                 Person b = new Person("junsang", 29);
@@ -120,15 +119,15 @@ namespace 부록3_Delegate_and_weakReference
                 Delegate dc = (Action)c.sayHello;
                 Delegate dd = (Action)d.sayHello;
 
-                var dr =
-                new List<DelegateReference> {
+                var dr = 
+                new List<DelegateReference> { 
                     new DelegateReference(null, new WeakReference(da.Target), da.GetMethodInfo(), da.GetType())
                     ,new DelegateReference(null, new WeakReference(db.Target), db.GetMethodInfo(), db.GetType())
                     ,new DelegateReference(null, new WeakReference(dc.Target), dc.GetMethodInfo(), dc.GetType())
                     ,new DelegateReference(null, new WeakReference(dd.Target), dd.GetMethodInfo(), dd.GetType())
                 };
 
-                foreach (var item in dr)
+                foreach(var item in dr)
                     vc2.onSwitchChangeSubscribeList.Add(item);
             })).Invoke();
 
