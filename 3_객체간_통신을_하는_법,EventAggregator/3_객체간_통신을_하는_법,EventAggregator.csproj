@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>_3_객체간_통신을_하는_법_EventAggregator</RootNamespace>
+  </PropertyGroup>
+
+</Project>
